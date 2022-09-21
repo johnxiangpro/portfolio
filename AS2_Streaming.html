@@ -1,0 +1,146 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Temp - Streaming Services Project</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<br> <br />
+				<br> <br />
+			
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="index.html#project">Back</a></li>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<!-- Context -->
+								<header>
+									<h1>Temp - Streaming Services Project</h1>
+									<span class="date">September 18, 2022</span>
+									<header>
+										<h2>Context</h2>
+										</header>
+						
+									<p>In this project, I explore and visualise public travel data for NYC yellow cabs in efforts to identify insights around trip seasonality, trip duration & distance and payment methods & tipping across trips. The data is managed by and sourced from the <a href="https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page" target = "_blank">Taxi and Limousine Commission (TLC)</a>, who are responsible for licensing and regulating NYC's taxi cabs and limousines. 
+									<p>Broadly speaking, there are two types of cabs in NYC:
+									<ul>
+										<li>Yellow cabs are limited by TLC-issued medallions, have no pick-up restrictions and generally operate within Manhattan city</li>
+										<li>Green cabs were introduced in 2013 to improve accessiblity, have pick-up restrictions in yellow cab zones & airports and tend to travel across NY state</li>
+									</ul>
+
+									<p>The distinction between cab types is important in our analysis as it dictates where cabs typically operate and where trips can / cannot be taken in. The analyses contains trips made by yellow cabs only and covers the months of February and August 2018 (assumed as Winter and Summer, respectively).</p>
+
+						<!-- Objective -->
+									
+									<header>
+										<h2>Objectives</h2>
+									<p>From the analysis, I am seeking to identify useful insights and validate four key hypotheses against the data, including:
+									<ol>
+										<li>People travel more in the Winter than in Summer</li>
+										<li>People take more trips during the evening</li>
+										<li>People tip more on the weekends</li>
+										<li>People take longer duration trips on the weekends</li>
+									</ol>
+						
+						<!-- Process -->
+
+									<header>
+										<h2>Process</h2>
+									<ol>
+										<li>Download the primary travel data in .csv format covering the applicable travel types, cab types and months</li>
+										<li>Download the supplementary travel data in .csv format covering borough and taxi zone mapping</li>
+										<li>Load both datasets into Alteryx Designer and execute the workflow shown below, with following steps:</li>
+											<ol>
+												<li>Input Data - import the primary travel data into Alteryx Designer</li>
+												<li>Data Cleansing - remove NULL from rows, trailing and leading white spaces</li>
+												<li>Select - update fields to appropriate data type and rename as applicable</li>
+												<li>RecordID - add index to serve as unique identifier for each row</li>
+												<li>Formula - calcuate fields such as ride duration, day of week etc.</li>
+												<li>Filter - apply filter to return months of February and August 2018 only</li>
+												<li>Left Join (2x) - enrich primary data (PickUp and DropOff ID) with location, zone and borough name</li>
+												<li>Output Data - export consolidated data into .csv for analysis (with container to switch on/off)</li>
+
+											</ol>
+										</ol>
+
+									<span class="image fit"><img src="images/1a_Cabs.png" alt="" /></span>
+
+									<blockquote>Note: As you can tell, I am an avid fan and consistent user of the 'Browse' tool in Alteryx as it allows me to check my work and thought process at every step of the workflow.</blockquote>
+
+								<ol start = 4><li>Load exported data into PowerBI for analysis</li>
+								</ol>
+						
+						<!-- Insights -->
+
+									<header>
+										<h2>Insights</h2>
+
+									<dl>
+										<dt>Hypothesis 1 - People do travel more in Winter than in Summer</dt>
+										<dd>
+											<ul>
+												<li>People in NYC travel more in Winter as opposed to Summer, which is true in both number of trips taken (8.2% higher) and passengers per trip (7.8% higher)</li>
+												<li>Number of trips taken are significantly higher on weekends during the Winter (44% and 22% for Saturday and Sunday, respectively) - which could be driven by increased recreational activity during the holiday season</li>
+												<li>Interestingly, the total duration of rides was lower in Winter despite number of trips being greater; which may attributable to longer travel times as a result of greater foot and car traffic during the busy working season</li>
+											</ul>
+										</dd>
+										<dt>Hypothesis 2 - People (generally) do not take more trips during the evening</dt>
+										<dd>
+											<ul>
+												<li>People in NYC do not tend to take more trips in the evening (defined as 6:00PM to 6:00AM); approx. 33% more trips were completed during the day</li>
+												<li>The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)</li>
+												<li>The number of trips dropped off in outer boroughs almost doubles when comparing day and night; giving us further indication that people do travel in the evenings (perhaps for more specific reasons)</li>
+											</ul>
+										</dd>
+										<dt>Hypothesis 3 - People do not tip more (via EFTPOS) on the weekends</dt>
+										<dd>
+											<ul>
+												<li>People in NYC do not tend to tip more on weekends, in both tip per ride and tip per passenger (weekends fall 25% short to weekdays)</li>
+												<li>Higher proportion of rides on weekends recorded no tip and is likely related to the TLC data only capturing EFTPOS tips as opposed to cash</li>
+												<li>30% of all trips are paid for in cash, and therefore the exclusion of cash tips would have a material impact on our results</li>
+											</ul>
+										</dd>
+										<dt>Hypothesis 4 - People take longer distance (but shorter duration) trips on the weekends</dt>
+										<dd>
+											<ul>
+												<li>People in NYC tend to travel longer distances (miles) but take a shorter or comparable amount of time to complete the trip, which is true across all days of the week</li>
+												<li>Short distance trips (0 and 5 miles) accounted for 85% of rides and, on a flows basis, occurs primarily within inner Manhattan</li>
+												<li>Duration is less skewed than distance, and this may again lend itself to traffic-related issues experienced within inner Manhattan</li>
+											</ul>
+										</dd>
+									</dl>
+
+							</section>
+
+					</div>
+
+					<br> <br />
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

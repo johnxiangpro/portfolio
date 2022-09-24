@@ -30,8 +30,8 @@
 					<div id="main">
 						<!-- Context -->
 								<header>
-									<h1>Temp - Streaming Services Project</h1>
-									<span class="date">September 18, 2022</span>
+									<h1>The rise of video on demand (VoD) services</h1>
+									<span class="date">September 24, 2022</span>
 									<header>
 										<h2>Context</h2>
 										</header>
@@ -62,28 +62,212 @@
 									<header>
 										<h2>Process</h2>
 									<ol>
-										<li>Download the primary travel data in .csv format covering the applicable travel types, cab types and months</li>
-										<li>Download the supplementary travel data in .csv format covering borough and taxi zone mapping</li>
-										<li>Load both datasets into Alteryx Designer and execute the workflow shown below, with following steps:</li>
-											<ol>
-												<li>Input Data - import the primary travel data into Alteryx Designer</li>
-												<li>Data Cleansing - remove NULL from rows, trailing and leading white spaces</li>
-												<li>Select - update fields to appropriate data type and rename as applicable</li>
-												<li>RecordID - add index to serve as unique identifier for each row</li>
-												<li>Formula - calcuate fields such as ride duration, day of week etc.</li>
-												<li>Filter - apply filter to return months of February and August 2018 only</li>
-												<li>Left Join (2x) - enrich primary data (PickUp and DropOff ID) with location, zone and borough name</li>
-												<li>Output Data - export consolidated data into .csv for analysis (with container to switch on/off)</li>
+										<li>Download the primary listing data in .csv format, covering the four major streaming services (Netflix, Disney+, Amazon Prime and Hulu)</li>
+										<li>Execute the following script in MySQL to load, cleanse and enrich the raw data:</li>
 
-											</ol>
-										</ol>
+								<!-- Preformatted Code -->
+								<pre><code><b>-- Create table(s) 'movies' and 'shows' in schema 'streaming'</b>
 
-									<span class="image fit"><img src="images/1a_Cabs.png" alt="" /></span>
+	CREATE TABLE movies (
+		service TEXT,
+		type TEXT,
+		title TEXT,
+		director TEXT, 
+		cast TEXT,
+		country TEXT,
+		long_date_added TEXT, 
+		release_year INT,
+		rating TEXT,
+        show_duration TEXT,
+		movie_duration TEXT,
+        genre_1 TEXT,
+        genre_2 TEXT,
+		genre_3 TEXT,
+		genre_4 TEXT,
+		description MEDIUMTEXT
+	);
 
-									<blockquote>Note: As you can tell, I am an avid fan and consistent user of the 'Browse' tool in Alteryx as it allows me to check my work and thought process at every step of the workflow.</blockquote>
+	CREATE TABLE shows (
+		service TEXT,
+		type TEXT,
+		title TEXT,
+		director TEXT, 
+		cast TEXT,
+		country TEXT,
+		long_date_added TEXT, 
+		release_year INT,
+		rating TEXT,
+		show_duration TEXT,
+		movie_duration TEXT,
+        genre_1 TEXT,
+        genre_2 TEXT,
+		genre_3 TEXT,
+		genre_4 TEXT,
+		description MEDIUMTEXT
+	);
 
-								<ol start = 4><li>Load exported data into PowerBI for analysis</li>
-								</ol>
+			DESCRIBE movies;
+			DESCRIBE shows;
+
+<b>-- Import data in .csv format to table(s) 'movies' and 'shows'</b>
+
+    SET GLOBAL local_infile=1;
+    
+    LOAD DATA LOCAL INFILE 'C:/.../movies.csv'
+	INTO TABLE movies 
+	FIELDS TERMINATED BY ',' 
+	ENCLOSED BY '"'
+	LINES TERMINATED BY '\r\n'
+	IGNORE 1 LINES;
+
+	LOAD DATA LOCAL INFILE 'C:/.../shows.csv'
+	INTO TABLE shows
+	FIELDS TERMINATED BY ',' 
+	ENCLOSED BY '"'
+	LINES TERMINATED BY '\r\n'
+	IGNORE 1 LINES;
+
+			SELECT COUNT(service) FROM movies;
+			SELECT COUNT(service) FROM shows;
+
+<b>-- Union datasets 'movies' and 'shows' to create 'consolidated'</b>
+
+	CREATE TABLE consolidated
+		SELECT * FROM movies
+			UNION
+		SELECT * FROM shows;
+
+	SELECT * FROM consolidated;
+
+<b>-- Add incremented value as identifier (primary key) column to dataset 'consolidated'</b>
+
+	ALTER TABLE consolidated
+		ADD COLUMN id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY FIRST;
+
+<b>-- Reformat column 'long_date_added' into DATE format, and rename into 'date_added'</b>
+
+    SET SQL_SAFE_UPDATES = 0;
+	
+	UPDATE consolidated 
+    SET long_date_added = IF(long_date_added='',NULL,STR_TO_DATE(long_date_added, "%M %e, %Y"));
+
+	ALTER TABLE consolidated
+	RENAME COLUMN long_date_added TO date_added;
+
+
+<b>-- Reformat columns '*_duration' into applicable format (movies = minutes, shows = seasons)</b>
+
+	UPDATE consolidated
+    SET show_duration = REPLACE(REPLACE(show_duration, ' Seasons', ''), ' Season', '');
+    
+	UPDATE consolidated
+    SET movie_duration = REPLACE (movie_duration,' min', '');
+    
+    
+<b>-- Check</b>
+
+	SELECT * FROM consolidated
+		WHERE type = 'TV Show';
+    
+	SELECT * FROM consolidated
+		WHERE type = 'Movie';
+
+
+<b>-- Create mapping table for cleaned rating based on 'Motion Picture Ratings System'</b>
+
+	CREATE TABLE rating_mapping (
+		rating_group TEXT,
+		rating TEXT
+		);
+
+	INSERT INTO rating_mapping 
+    VALUES
+		('G', 'ALL'),
+		('G', 'TV-G'),
+		('G', 'TV-Y'),
+		('G', 'ALL_AGES'),
+		('G', 'G'),
+		('MA', 'R'),
+		('MA', 'TV-MA'),
+		('PG', '7+'),
+		('PG', 'PG'),
+		('PG', 'TV-PG'),
+		('PG', 'TV-Y7'),
+		('PG', 'TV-Y7-FV'),
+		('PG-13', '13+'),
+		('PG-13', 'TV-14'),
+		('PG-13', 'AGES_16_'),
+		('PG-13', 'PG-13'),
+		('R-18', '16+'),
+		('R-18', '18+'),
+		('R-18', 'AGES_18_'),
+		('R-18', 'NC-17'),
+		('Unrated', 'NR'),
+		('Unrated', 'TV-NR'),
+		('Unrated', 'NOT RATED'),
+		('Unrated', 'NOT_RATE'),
+		('Unrated', 'UNRATED'),
+		('Unrated', 'UR'),
+        ('Unrated', '');
+
+	SELECT * FROM rating_mapping;
+    
+<b>-- Create mapping table for unique list of all genres</b>
+
+
+	CREATE TABLE genre_mapping (
+		genre_map TEXT
+		);
+        
+	INSERT INTO genre_mapping 
+    VALUES
+		('Action'),
+		('Adult Animation'),
+		('Adventure'),
+		('Animals & Nature'),
+		('Animation and Cartoons'),
+		('Anthology'),
+		('British TV Shows'),
+		('Buddy'),
+		('Classics'),
+		('Comedy'),
+		('Crime'),
+		('Cult Movies'),
+		('Documentary'),
+		('Drama'),
+		('Entertainment and Culture'),
+		('Faith and Spirituality'),
+		('Family and Kids'),
+		('Game Show'),
+		('Health, Lifestyle and Culture'),
+		('History'),
+		('Horror'),
+		('International'),
+		('LGBTQ+'),
+		('Medical'),
+		('Military and War'),
+		('Musical and Dance'),
+		('No genre'),
+		('Police and Cop'),
+		('Reality TV'),
+		('Romance'),
+		('Sci-Fi'),
+		('Sitcom'),
+		('Special Interest'),
+		('Sports'),
+		('Spy and Espionage'),
+		('Superhero'),
+		('Survival'),
+		('Thriller and Mystery'),
+		('Variety and Talk Show'),
+		('Western'),
+		('Young Adult');
+        
+	SELECT * FROM genre_mapping;</code></pre>
+
+				<li>Load exported data into PowerBI by using MySQL Connector add-on and connecting to schema 'streaming' (and related tables)</li>
+				<li>Set up active relationship between table(s) 'consolidated' and 'rating_mapping' (many to one cardinality)</li>				
+					<br><br/>
 						
 						<!-- Insights -->
 

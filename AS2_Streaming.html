@@ -30,32 +30,28 @@
 					<div id="main">
 						<!-- Context -->
 								<header>
-									<h1>The rise of video on demand (VoD) services</h1>
+									<h1>The rise of video streaming services</h1>
 									<span class="date">September 24, 2022</span>
 									<header>
 										<h2>Context</h2>
 										</header>
 						
-									<p>In this project, I explore and visualise public travel data for NYC yellow cabs in efforts to identify insights around trip seasonality, trip duration & distance and payment methods & tipping across trips. The data is managed by and sourced from the <a href="https://www1.nyc.gov/site/tlc/about/tlc-trip-record-data.page" target = "_blank">Taxi and Limousine Commission (TLC)</a>, who are responsible for licensing and regulating NYC's taxi cabs and limousines. 
-									<p>Broadly speaking, there are two types of cabs in NYC:
+									<p>In this project, I explore public listing data across four streaming providers, conduct longitudinal analysis over member growth, listings, genres & durations and report on my findings in a dynamic dashboard format. 
+									<p>The data is sourced, cleansed and managed by <a href="https://www.kaggle.com/shivamb/datasets" target = "_blank">Shivam Bansal (via Kaggle)</a>. The dashboard covers listing data from inception to 2021 for providers Netflix, Amazon Prime, Disney Plus and Hulu.
+									<p>Some of the key metrics are defined as:
 									<ul>
-										<li>Yellow cabs are limited by TLC-issued medallions, have no pick-up restrictions and generally operate within Manhattan city</li>
-										<li>Green cabs were introduced in 2013 to improve accessiblity, have pick-up restrictions in yellow cab zones & airports and tend to travel across NY state</li>
+										<li>'Time To Service' - calculated as the difference between [Date that listing was added to platform] and  [Date that listing was released]</li>
+										<li>'Parental Ratings' - refers to the 'Motion Picture Film Rating System' and includes rolled-up data points from each platform</li>
+										<li>'Duration' (movies) - grouped as 'Short covers 0 to 60 minutes', 'Moderate covers 61 to 120 minutes' and 'Long covers > 121 minutes'</li>
+										<li>'Duration (shows)' - grouped as 'Short covers 1 - 3 seasons', 'Moderate covers 4 to 10 seasons' and 'Long covers > 11 seasons'</li>
 									</ul>
-
-									<p>The distinction between cab types is important in our analysis as it dictates where cabs typically operate and where trips can / cannot be taken in. The analyses contains trips made by yellow cabs only and covers the months of February and August 2018 (assumed as Winter and Summer, respectively).</p>
 
 						<!-- Objective -->
 									
 									<header>
 										<h2>Objectives</h2>
-									<p>From the analysis, I am seeking to identify useful insights and validate four key hypotheses against the data, including:
-									<ol>
-										<li>People travel more in the Winter than in Summer</li>
-										<li>People take more trips during the evening</li>
-										<li>People tip more on the weekends</li>
-										<li>People take longer duration trips on the weekends</li>
-									</ol>
+										</header>
+									<p>From the analysis, I aim to report on key trends and insights from the listing data in a dynamic and visual manner; allowing users to filter across provider, listing, genre.</p>
 						
 						<!-- Process -->
 
@@ -265,55 +261,52 @@
         
 	SELECT * FROM genre_mapping;</code></pre>
 
-				<li>Load exported data into PowerBI by using MySQL Connector add-on and connecting to schema 'streaming' (and related tables)</li>
-				<li>Set up active relationship between table(s) 'consolidated' and 'rating_mapping' (many to one cardinality)</li>				
-					<br><br/>
-						
+				<li>Establish connection to schema 'streaming' and related tables in PowerBI using MySQL Connector add-on</li>
+				<li>Analyse the financial statements and management report of providers to document number of members per year (2008 to 2021) in table 'members'</li>		
+				<li>Establish connection to external table 'members' (.csv) and set up relationship with table 'consolidated' (many to one cardinality)</li>
+				<li>Set up relationship between table 'consolidated' and both (i) 'rating_mapping' and (ii) 'genre_mapping' (many to one cardinality)</li>
+				<li>Create support table '_measures' and 'GenreSlicer' to house calculated measures, filter fields etc.</li>
+				<li>Create page '_Listings' and include data points used in report-level tooltip on primary page</li>
+				<li>Create dynamic bookmarks to allow for the filtering across provider and selection of different charts on single page</li>		
+								</header>	
+
 						<!-- Insights -->
 
-									<header>
-										<h2>Insights</h2>
+							<header>
+								<h2>Insights</h2>
 
-									<dl>
-										<dt>Hypothesis 1 - People do travel more in Winter than in Summer</dt>
-										<dd>
-											<ul>
-												<li>People in NYC travel more in Winter as opposed to Summer, which is true in both number of trips taken (8.2% higher) and passengers per trip (7.8% higher)</li>
-												<li>Number of trips taken are significantly higher on weekends during the Winter (44% and 22% for Saturday and Sunday, respectively) - which could be driven by increased recreational activity during the holiday season</li>
-												<li>Interestingly, the total duration of rides was lower in Winter despite number of trips being greater; which may attributable to longer travel times as a result of greater foot and car traffic during the busy working season</li>
-											</ul>
-										</dd>
-										<dt>Hypothesis 2 - People (generally) do not take more trips during the evening</dt>
-										<dd>
-											<ul>
-												<li>People in NYC do not tend to take more trips in the evening (defined as 6:00PM to 6:00AM); approx. 33% more trips were completed during the day</li>
-												<li>The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)</li>
-												<li>The number of trips dropped off in outer boroughs almost doubles when comparing day and night; giving us further indication that people do travel in the evenings (perhaps for more specific reasons)</li>
-											</ul>
-										</dd>
-										<dt>Hypothesis 3 - People do not tip more (via EFTPOS) on the weekends</dt>
-										<dd>
-											<ul>
-												<li>People in NYC do not tend to tip more on weekends, in both tip per ride and tip per passenger (weekends fall 25% short to weekdays)</li>
-												<li>Higher proportion of rides on weekends recorded no tip and is likely related to the TLC data only capturing EFTPOS tips as opposed to cash</li>
-												<li>30% of all trips are paid for in cash, and therefore the exclusion of cash tips would have a material impact on our results</li>
-											</ul>
-										</dd>
-										<dt>Hypothesis 4 - People take longer distance (but shorter duration) trips on the weekends</dt>
-										<dd>
-											<ul>
-												<li>People in NYC tend to travel longer distances (miles) but take a shorter or comparable amount of time to complete the trip, which is true across all days of the week</li>
-												<li>Short distance trips (0 and 5 miles) accounted for 85% of rides and, on a flows basis, occurs primarily within inner Manhattan</li>
-												<li>Duration is less skewed than distance, and this may again lend itself to traffic-related issues experienced within inner Manhattan</li>
-											</ul>
-										</dd>
-									</dl>
+							<dl>
+								<dt>Listings & Member Growth</dt>
+								<dd>
+									<ul>
+										<li>People in NYC travel more in Winter as opposed to Summer, which is true in both number of trips taken (8.2% higher) and passengers per trip (7.8% higher)</li>
+										<li>Number of trips taken are significantly higher on weekends during the Winter (44% and 22% for Saturday and Sunday, respectively) - which could be driven by increased recreational activity during the holiday season</li>
+										<li>Interestingly, the total duration of rides was lower in Winter despite number of trips being greater; which may attributable to longer travel times as a result of greater foot and car traffic during the busy working season</li>
+									</ul>
+								</dd>
+								<dt>Genres & Duration</dt>
+								<dd>
+									<ul>
+										<li>People in NYC do not tend to take more trips in the evening (defined as 6:00PM to 6:00AM); approx. 33% more trips were completed during the day</li>
+										<li>The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)</li>
+										<li>The number of trips dropped off in outer boroughs almost doubles when comparing day and night; giving us further indication that people do travel in the evenings (perhaps for more specific reasons)</li>
+									</ul>
+								</dd>
+								<dt>Time to Service, Rating & Releases</dt>
+								<dd>
+									<ul>
+										<li>People in NYC do not tend to tip more on weekends, in both tip per ride and tip per passenger (weekends fall 25% short to weekdays)</li>
+										<li>Higher proportion of rides on weekends recorded no tip and is likely related to the TLC data only capturing EFTPOS tips as opposed to cash</li>
+										<li>30% of all trips are paid for in cash, and therefore the exclusion of cash tips would have a material impact on our results</li>
+									</ul>
+								</dd>
+							</dl>
 
-							</section>
+					</section>
 
-					</div>
+			</div>
 
-					<br> <br />
+			<br> <br />
 
 			</div>
 

@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Temp - Streaming Services Project</title>
+		<title>The rise of video streaming services</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -36,7 +36,7 @@
 										<h2>Context</h2>
 										</header>
 						
-									<p>In this project, I explore public listing data across four streaming providers, conduct longitudinal analysis over member growth, listings, genres & durations and report on my findings in a dynamic dashboard format. 
+									<p>The meteoric rise of video streaming services has displaced traditional, off-the-shelf providers of movies and shows, with no signs of slowing down any time soon. In this project, I explore public listing data across four of the most popular streaming providers and conduct longitudinal analysis over member growth, listings, genres & durations. I report on my findings, observations and key insights in a dynamic dashboard format. 
 									<p>The data is sourced, cleansed and managed by <a href="https://www.kaggle.com/shivamb/datasets" target = "_blank">Shivam Bansal (via Kaggle)</a>. The dashboard covers listing data from inception to 2021 for providers Netflix, Amazon Prime, Disney Plus and Hulu.
 									<p>Some of the key metrics are defined as:
 									<ul>
@@ -59,7 +59,7 @@
 										<h2>Process</h2>
 									<ol>
 										<li>Download the primary listing data in .csv format, covering the four major streaming services (Netflix, Disney+, Amazon Prime and Hulu)</li>
-										<li>Execute the following script in MySQL to load, cleanse and enrich the raw data:</li>
+										<li>Execute the following script in <i><b>MySQL</b></i> to load, cleanse and enrich the raw data:</li>
 
 								<!-- Preformatted Code -->
 								<pre><code><b>-- Create table(s) 'movies' and 'shows' in schema 'streaming'</b>
@@ -261,7 +261,7 @@
         
 	SELECT * FROM genre_mapping;</code></pre>
 
-				<li>Establish connection to schema 'streaming' and related tables in PowerBI using MySQL Connector add-on</li>
+				<li>Establish connection to schema 'streaming' and related tables in <i><b>PowerBI</b></i> using MySQL Connector add-on</li>
 				<li>Analyse the financial statements and management report of providers to document number of members per year (2008 to 2021) in table 'members'</li>		
 				<li>Establish connection to external table 'members' (.csv) and set up relationship with table 'consolidated' (many to one cardinality)</li>
 				<li>Set up relationship between table 'consolidated' and both (i) 'rating_mapping' and (ii) 'genre_mapping' (many to one cardinality)</li>
@@ -279,25 +279,32 @@
 								<dt>Listings & Member Growth</dt>
 								<dd>
 									<ul>
-										<li>People in NYC travel more in Winter as opposed to Summer, which is true in both number of trips taken (8.2% higher) and passengers per trip (7.8% higher)</li>
-										<li>Number of trips taken are significantly higher on weekends during the Winter (44% and 22% for Saturday and Sunday, respectively) - which could be driven by increased recreational activity during the holiday season</li>
-										<li>Interestingly, the total duration of rides was lower in Winter despite number of trips being greater; which may attributable to longer travel times as a result of greater foot and car traffic during the busy working season</li>
+										<li>Video streaming services started to grow in popularity in 2008, when both Netflix and Prime (then known as 'Amazon Instant Video on Demand') introduced the first rendition of their offering to market</li>
+										<li>Since then, the number of members across all services has grown consistenty to date (up 16% vs 2020, with 34% 10-year CAGR); Hulu and Prime have grown the fastest (44% and 46% 10-year CAGR, respectively), with recent entry Disney Plus capturing member share as well</li>
+										<li>Prime and Hulu have increased the number of listings added to their platform, primarily in the last few years and were generally movies as opposed to shows (up 95% vs 2020 for Prime, up 45% for Hulu)</li>
+										<li>Netflix has historically relied on licensed content to drive platform growth; and intensified competition from existing providers and new entrants (the likes of Apple TV, HBO Max, Paramount Plus etc.) has impacted the total number of listings and slowed member growth (up 9% vs 2020, after a decade of double digit growth)</li>
+										<li>Despite efforts to grow their 'Netflix Original' branding, the number of total listings has plateaued and declined from 2019 (down 15% vs 2020 for shows, down 22% vs 2020 for movies)</li>
 									</ul>
 								</dd>
 								<dt>Genres & Duration</dt>
 								<dd>
 									<ul>
-										<li>People in NYC do not tend to take more trips in the evening (defined as 6:00PM to 6:00AM); approx. 33% more trips were completed during the day</li>
-										<li>The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)The hourly distribution of travel paints a different picture, as the volume of trips continue into the early hours (12AM to 3AM) of weekends; which is like attributed to the purpose of trips (recreational, dinner, partying etc.)</li>
-										<li>The number of trips dropped off in outer boroughs almost doubles when comparing day and night; giving us further indication that people do travel in the evenings (perhaps for more specific reasons)</li>
+										<li>Across all providers, the genres 'Drama', 'Action' and 'Comedy' have the most listings in 2021 (up 39%, 58% and 18% vs 2020, respectively)</li>
+										<li>Top genres are generally consistent across providers, with the exception of Hulu (who have more documentary-focused listings) and Disney Plus (who have more animations and children shows)</li>
+										<li>In recent times, Disney has also added more 'short duration' listings than any other provider - which is consistent with their service offering catered towards younger viewers</li>
 									</ul>
 								</dd>
 								<dt>Time to Service, Rating & Releases</dt>
 								<dd>
 									<ul>
-										<li>People in NYC do not tend to tip more on weekends, in both tip per ride and tip per passenger (weekends fall 25% short to weekdays)</li>
-										<li>Higher proportion of rides on weekends recorded no tip and is likely related to the TLC data only capturing EFTPOS tips as opposed to cash</li>
-										<li>30% of all trips are paid for in cash, and therefore the exclusion of cash tips would have a material impact on our results</li>
+										<li>The average time to service across providers is 8 years, with Netflix (5) and Hulu (7) existing at the lower side of the spectrum; Disney Plus' time to service (17) is skewed by their late entry to the market and retrospectively adding shows to their platform</li>
+										<li>The most common parental rating for listings is PG-13 and the least common is R-18, which true for all providers except:</li>
+											<ul>
+												<li>Prime - where R-18 is the most common rating, likely due to having more international titles in their portfolio; and </li>
+												<li>Disney - where PG is the most common rating, once again due to their service offering catered towards younger viewers</li>
+
+											</ul>
+
 									</ul>
 								</dd>
 							</dl>

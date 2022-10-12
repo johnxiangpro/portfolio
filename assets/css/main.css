@@ -2863,6 +2863,13 @@ input, select, textarea {
 		padding-left: 1rem;
 	}
 
+
+	ul > ul {
+		list-style-type: '-';
+		padding-left: 2rem;
+
+	}
+
 		ul li {
 			padding-left: 0.5rem;
 		}
